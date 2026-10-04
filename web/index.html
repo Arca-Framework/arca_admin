@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="admin" class="hidden">
+        <aside id="side">
+            <div class="brand"><img class="logo" src="logo.png" alt=""><div><b>Arca</b><small id="rank">Admin</small></div></div>
+            <nav id="tabs">
+                <button data-tab="dashboard" class="active"><i class="fa-solid fa-gauge-high"></i>Dashboard</button>
+                <button data-tab="players"><i class="fa-solid fa-users"></i>Players<span id="player-count" class="pill">0</span></button>
+                <button data-tab="vehicles"><i class="fa-solid fa-car"></i>Vehicles</button>
+                <button data-tab="world"><i class="fa-solid fa-cloud-sun"></i>World</button>
+                <button data-tab="self"><i class="fa-solid fa-user-shield"></i>Self &amp; Dev</button>
+                <button data-tab="server"><i class="fa-solid fa-server"></i>Server</button>
+            </nav>
+            <button id="close" class="ghost"><i class="fa-solid fa-xmark"></i>Close <kbd>Esc</kbd></button>
+        </aside>
+
+        <main id="content">
+            <!-- dashboard -->
+            <section data-page="dashboard" class="page active">
+                <h1 id="server-name">Server</h1>
+                <div class="stats">
+                    <div class="stat"><span>Players</span><b id="s-players">0</b></div>
+                    <div class="stat"><span>Uptime</span><b id="s-uptime">0m</b></div>
+                    <div class="stat"><span>Weather</span><b id="s-weather">-</b></div>
+                    <div class="stat"><span>Time</span><b id="s-time">--:--</b></div>
+                </div>
+                <h2>Quick actions</h2>
+                <div class="grid">
+                    <button class="tile" data-action="noclip"><i class="fa-solid fa-feather"></i>Noclip</button>
+                    <button class="tile" data-action="tpm"><i class="fa-solid fa-location-dot"></i>Teleport to waypoint</button>
+                    <button class="tile" data-action="coords"><i class="fa-solid fa-crosshairs"></i>Coords editor</button>
+                    <button class="tile" data-action="godmode" data-toggle="godmode"><i class="fa-solid fa-shield-heart"></i>God mode</button>
+                    <button class="tile" data-action="fixvehicle"><i class="fa-solid fa-wrench"></i>Fix vehicle</button>
+                    <button class="tile" data-action="reviveall" data-confirm="Revive every player?"><i class="fa-solid fa-heart-pulse"></i>Revive all</button>
+                    <button class="tile" data-form="announce"><i class="fa-solid fa-bullhorn"></i>Announcement</button>
+                    <button class="tile" data-action="blips" data-toggle="blips"><i class="fa-solid fa-map-location-dot"></i>Player blips</button>
+                </div>
+            </section>
+
+            <!-- players -->
+            <section data-page="players" class="page split">
+                <div class="list-col">
+                    <div class="search"><i class="fa-solid fa-magnifying-glass"></i><input id="player-search" placeholder="Search name, ID, citizen ID…"></div>
+                    <div id="player-list" class="list"></div>
+                </div>
+                <div id="player-detail" class="detail">
+                    <div class="empty"><i class="fa-solid fa-user"></i>Select a player</div>
+                </div>
+            </section>
+
+            <!-- vehicles -->
+            <section data-page="vehicles" class="page">
+                <h1>Vehicles</h1>
+                <div class="row-form" data-perm="spawnvehicle">
+                    <input id="veh-model" placeholder="Model name, e.g. sultan">
+                    <button class="primary" id="veh-spawn"><i class="fa-solid fa-plus"></i>Spawn</button>
+                </div>
+                <div id="quick-vehicles" class="chips" data-perm="spawnvehicle"></div>
+                <h2>Current / nearest vehicle</h2>
+                <div class="grid">
+                    <button class="tile" data-action="fixvehicle"><i class="fa-solid fa-wrench"></i>Repair</button>
+                    <button class="tile" data-action="cleanvehicle"><i class="fa-solid fa-soap"></i>Clean</button>
+                    <button class="tile" data-action="refuelvehicle"><i class="fa-solid fa-gas-pump"></i>Refuel</button>
+                    <button class="tile" data-action="flipvehicle"><i class="fa-solid fa-rotate"></i>Flip</button>
+                    <button class="tile" data-action="tunevehicle"><i class="fa-solid fa-gauge-simple-high"></i>Max upgrades</button>
+                    <button class="tile danger" data-action="deletevehicle"><i class="fa-solid fa-trash"></i>Delete</button>
+                </div>
+                <h2>Cleanup</h2>
+                <div class="grid">
+                    <button class="tile" data-action="clearvehicles" data-data='{"radius":50}' data-confirm="Delete all empty vehicles within 50m?"><i class="fa-solid fa-broom"></i>Empty vehicles · 50m</button>
+                    <button class="tile danger" data-action="clearvehicles" data-data='{"radius":0}' data-confirm="Delete every empty vehicle on the map?"><i class="fa-solid fa-dumpster-fire"></i>Empty vehicles · map</button>
+                </div>
+            </section>
+
+            <!-- world -->
+            <section data-page="world" class="page">
+                <h1>World</h1>
+                <h2>Weather</h2>
+                <div id="weather-list" class="chips" data-perm="weather"></div>
+                <h2>Time</h2>
+                <div class="row-form" data-perm="time">
+                    <input id="time-hour" type="number" min="0" max="23" placeholder="Hour">
+                    <input id="time-minute" type="number" min="0" max="59" placeholder="Minute">
+                    <button class="primary" id="time-set"><i class="fa-solid fa-clock"></i>Set time</button>
+                </div>
+                <div class="chips" data-perm="time">
+                    <button class="chip" data-time="6">Dawn 06:00</button>
+                    <button class="chip" data-time="12">Noon 12:00</button>
+                    <button class="chip" data-time="18">Evening 18:00</button>
+                    <button class="chip" data-time="0">Midnight 00:00</button>
+                </div>
+                <div class="grid">
+                    <button class="tile" data-action="freezetime" data-toggle="freeze"><i class="fa-solid fa-snowflake"></i>Freeze time</button>
+                    <button class="tile" data-action="blackout" data-toggle="blackout"><i class="fa-solid fa-power-off"></i>Blackout</button>
+                </div>
+            </section>
+
+            <!-- self -->
+            <section data-page="self" class="page">
+                <h1>Self &amp; Dev</h1>
+                <div class="grid">
+                    <button class="tile" data-action="noclip" data-toggle="noclip"><i class="fa-solid fa-feather"></i>Noclip</button>
+                    <button class="tile" data-action="godmode" data-toggle="godmode"><i class="fa-solid fa-shield-heart"></i>God mode</button>
+                    <button class="tile" data-action="invisible" data-toggle="invisible"><i class="fa-solid fa-ghost"></i>Invisible</button>
+                    <button class="tile" data-action="names" data-toggle="names"><i class="fa-solid fa-id-badge"></i>Player names</button>
+                    <button class="tile" data-action="blips" data-toggle="blips"><i class="fa-solid fa-map-location-dot"></i>Player blips</button>
+                    <button class="tile" data-action="tpm"><i class="fa-solid fa-location-dot"></i>Teleport to waypoint</button>
+                    <button class="tile" data-self="heal"><i class="fa-solid fa-heart"></i>Heal self</button>
+                    <button class="tile" data-self="revive"><i class="fa-solid fa-heart-pulse"></i>Revive self</button>
+                </div>
+                <h2>Developer</h2>
+                <div class="grid">
+                    <button class="tile accent" data-action="coords"><i class="fa-solid fa-crosshairs"></i>Open coords editor</button>
+                    <button class="tile" data-copy="vector3" data-perm="coords"><i class="fa-regular fa-copy"></i>Copy vector3</button>
+                    <button class="tile" data-copy="vector4" data-perm="coords"><i class="fa-regular fa-copy"></i>Copy vector4</button>
+                    <button class="tile" data-form="tpcoords"><i class="fa-solid fa-arrows-to-dot"></i>Teleport to coords</button>
+                </div>
+                <p class="note">Noclip: WASD move · Q/E down/up · Shift fast · Alt slow. Bind it to a key in GTA Settings › Key Bindings › FiveM.</p>
+            </section>
+
+            <!-- server -->
+            <section data-page="server" class="page">
+                <h1>Server</h1>
+                <div class="grid">
+                    <button class="tile" data-form="announce"><i class="fa-solid fa-bullhorn"></i>Announcement</button>
+                    <button class="tile" data-action="reviveall" data-confirm="Revive every player?"><i class="fa-solid fa-heart-pulse"></i>Revive all</button>
+                </div>
+                <div data-perm="unban">
+                    <h2>Active bans</h2>
+                    <div id="ban-list" class="table"></div>
+                </div>
+                <div data-perm="resources">
+                    <h2>Resources</h2>
+                    <div class="search"><i class="fa-solid fa-magnifying-glass"></i><input id="res-search" placeholder="Filter resources…"></div>
+                    <div id="res-list" class="table"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- input / confirm dialog -->
+    <div id="modal" class="hidden">
+        <form id="modal-box">
+            <h3 id="modal-title"></h3>
+            <div id="modal-fields"></div>
+            <div class="modal-actions">
+                <button type="button" class="ghost" id="modal-cancel">Cancel</button>
+                <button type="submit" class="primary" id="modal-ok">Confirm</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
